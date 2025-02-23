@@ -3,12 +3,10 @@ The sensorless feature is based on Trinamic TMC 2209 StallGuard function.<br>
 The TMC 2209 integrates a UART, to wich a RP2040 is connected to check the StallGuard reading by the driver.<br>
 When the torque applied to the motor increases, the StallGuard value decreases.<br>
 
-This code is for RP2040 or RP2350 microprocessors, as it leverages on the PIO feature; Boards with these micros are Raspberry Pi Pico, Pico2, RP2040-Zero, RP2350-Zero, and many others.<br>
-I'm working on a larger project with stepper motors and RP2040 microprocessor and this part might be useful to other makers.<br>
+This code is for RP2040 or RP2350 microprocessors, as it leverages on the PIO features; Boards with these micros are Raspberry Pi Pico, Pico2, RP2040-Zero, RP2350-Zero, and many others.<br>
+I'm working on a larger project with stepper motors and RP2040 microprocessor, and this specific part might be useful to other makers.
 
-
-<br><br>
-
+<br><br><br>
 
 ## Showcasing video:
 Showcase objective: Stepper motor stopping in the middle of two contraints (homes).<br>
@@ -19,8 +17,7 @@ In the video:
  - steps generation and steps counting are based on PIO. For more details check [https://github.com/AndreaFavero71/pio_stepper_control](https://github.com/AndreaFavero71/pio_stepper_control).
  - after the second direction change, the stepper is stopped in the midlle of the 2 contraints.
  - the homing speed can be adjusted. Below 400Hz the StallGuard is not accurate.
- - the StallGuard value varies with speed: For homing detection the SG treshold is calculated based on the chart below.
-
+ 
    
 https://youtu.be/ZdNAM-4AH98
 [![Watch the Demo](https://i.ytimg.com/vi/Dh-xW871_UM/maxresdefault.jpg)](https://youtu.be/Dh-xW871_UM)
@@ -37,11 +34,11 @@ https://youtu.be/ZdNAM-4AH98
  - the stepper speed is alternated between 400Hz and 800Hz.
  - UART comunication between RP2040 and TMC2209.
  - the rgb led flashes red when SG is crossed, and flashes green when the stepper is centered. 
-
 <br><br><br>
 
 
 For the Sensorless homing, the stepper is stopped when the StallGuard falls below 80% of the expected minimum SG.<br>
+The StallGuard value varies with speed: For the homing detection the SG treshold is calculated as indicated in below chart.<br>
 When the stepper speed varies within a limited frequency rance, the SG variation is rather limited.<br>
 In below chart, the StallGuard values experimentally collected in my setup:<br>
  
@@ -77,20 +74,20 @@ In below chart, the StallGuard values experimentally collected in my setup:<br>
 <br><br>
 
 ## Installation
-1. Set the TMC2209 Vref according to the driver's datasheet and the connected stepper.
-2. Copy files from `\src\` folder to your Raspberry Pi Pico.
+1. Set the TMC2209 Vref according to the driver's datasheet and the stepper characteristics.
+2. Copy all the files from `\src\` folder to a folder in your Raspberry Pi Pico.
 3. Run the example.py script in MicroPython.
-4. Press th puch button, connected to GPIO 9, and the Sensorless homing process hould start.
-5. Adjust the k parameter in stepper.py to increase or reduce StallGuard sensitivity.
-6. In my setup I could vary the Vref between 1.0V and 1.4V without the need to change the code.
+4. Press the push button, connected to GPIO 9, and the Sensorless homing process will start.
+5. Adjust the k parameter in stepper.py , to increase or reduce StallGuard sensitivity.
+6. In my setup, I could vary the Vref between 1.0V and 1.4V to get realibly the homing without the need to change the code.
 
 <br><br>
 
 ## Notes
-In the example provided, in case of RP2040-Zero or RP2350-Zero (not the Pico, nor Pico W nor Pico 2 versions), the onboard BGR led blinks when the StallGuards falls below the value assigned for Sensorless homing.
+In the example provided, the onboard RGB led blinks when the StallGuards falls below the value assigned for Sensorless homing. The code uses the onboard RGB led of RP2040-Zero or RP2350-Zero, yet not available in Pico, nor Pico W nor Pico 2 versions. 
 
-Please Take note of the License related to the TMC2209 files.
-Feel free to use this code, to modify it according to your need (by respecting the License requirements), and to feedback in case of improvements proposals.
+Please Take note of the License related to the TMC2209 files, as having some restrictions.
+Feel free to use and change the code to your need, by respecting the License requirements; Please feedback in case of improvements proposals.
 
 Of course, using this code is at your own risk :-)
 
