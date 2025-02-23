@@ -39,10 +39,10 @@ https://youtu.be/Dh-xW871_UM
 <br><br><br>
 
 ### StallGuard varies with speed, further than torque:
-The StallGuard value varies with speed: In below chart, the StallGuard values experimentally collected in my setup, when the stepper was spinning without load.<br>
-When the stepper speed varies within a limited frequency rance, the SG variation is rather and conveniently linear.<br>
-In the code the expectd minimum SG is calculated from the speed: For the Sensorless homing, the stepper is stopped when the StallGuard falls below 80% of the expected minimum SG.<br>
-In my setup, this approach works well for stepper speed ranging from 400Hz to 1200Hz. One important note is to discharge the SG values of first 100ms when the motor is started.<br>
+The StallGuard value varies with speed: In below chart, the StallGuard values, were experimentally collected in my setup with the stepper spinning without load.<br>
+When the stepper speed varies within a limited frequency rance, the SG variation is rather (and conveniently) linear.<br>
+In the code the expectd minimum SG is calculated from the speed as `min_expected_SG = 0.15 * speed` (speed being the stepper frequency in Hz): For the Sensorless homing, the stepper is stopped when the StallGuard falls below 80% of the expected minimum SG.<br>
+In my setup, this approach works well for stepper speed ranging from 400Hz to 1200Hz (one important note is to discharge the first SG values when the motor is started, i.e. first 100ms).<br>
  
   ![chart image](/images/sg_chart2.PNG)
  
@@ -77,10 +77,10 @@ In my setup, this approach works well for stepper speed ranging from 400Hz to 12
 
 ## Installation:
 1. Set the TMC2209 Vref according to the driver's datasheet and the stepper characteristics.
-2. Copy all the files from `\src\` folder to a folder in your Raspberry Pi Pico.
+2. Copy all the files from `/stepper_sensorless_homing/tree/main/src` folder to a folder in your Raspberry Pi Pico.
 3. Run the example.py script in MicroPython.
 4. Press the push button, connected to GPIO 9, and the Sensorless homing process will start.
-5. Adjust the k parameter in stepper.py , to increase or reduce StallGuard sensitivity.
+5. Eventually adjust the k parameter in stepper.py , to increase or reduce StallGuard sensitivity.
 6. In my setup, I could vary the Vref between 1.0V and 1.4V and reliably getting the homing at 400Hz and 1200Hz, without the need to change the code.
 
 <br><br>
