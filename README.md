@@ -19,7 +19,7 @@ In the video:
  - the homing speed can be adjusted. Below 400Hz the StallGuard is not accurate.
  
    
-https://youtu.be/ZdNAM-4AH98
+https://youtu.be/Dh-xW871_UM
 [![Watch the Demo](https://i.ytimg.com/vi/Dh-xW871_UM/maxresdefault.jpg)](https://youtu.be/Dh-xW871_UM)
 
 
