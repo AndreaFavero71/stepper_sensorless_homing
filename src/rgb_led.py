@@ -1,9 +1,10 @@
 """
-Andrea Favero 22/02/2025
+Andrea Favero 16/05/2025
 
 Micropython code for Raspberry Pi Pico (RP2040 and RP2350)
 It demonstrates how to use StallGuard function from TMC2209 stepper driver.
-The RP2040 (or RP2350) use PIO to generate the stepper steps
+This Class uses the RGB led of RP2040-Zero boards to feedback about the
+SENSORLESS HOMING process.
 
 
 

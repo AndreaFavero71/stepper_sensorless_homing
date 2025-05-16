@@ -1,5 +1,5 @@
 """
-Andrea Favero 22/02/2025
+Andrea Favero 16/05/2025
 
 Micropython code for Raspberry Pi Pico (RP2040 and RP2350)
 It demonstrates how to use StallGuard function from TMC2209 stepper driver.
@@ -32,14 +32,14 @@ SOFTWARE.
 """
 
 from machine import Pin
-import time, os, random
+import time, os
 
 
 def import_led():
     """
-    The rgb_led is used to visually feedback the code is started.
+    The rgb_led is used to visually feedback once the code is started.
     The led flashes for quite some time, allowing to connect to the RP2040 via an IDE (i.e. Thonny).
-    During this time is possible to interrupt the code from further imports.
+    During this time is possible to interrupt (CTRL + C) the code from further imports.
     """
     print("waiting time to eventually stop the code before further imports ...")
     from rgb_led import rgb_led
@@ -59,16 +59,24 @@ def import_stepper():
    
     
 def pin_handler(pin):
+    """
+    Short and fast function to capture the interrupt based on GPIO (push button).
+    This function is also used to debounce the push button.
+    """
     global centering, homing_requested
     
-    time.sleep_ms(debounce_time)     # wait for debounce time
-    if pin.value() == 0:             # check if GPIO pin is still LOW after debounce period
-        if not centering:            # case a centering process is not in place
-            homing_requested = True  # set flag instead of calling function directly
+    time.sleep_ms(debounce_time_ms)          # wait for debounce time
+    if pin.value() == 0:                     # check if GPIO pin is still LOW after debounce period
+        if not centering:                    # case a motor centering process is not in place
+            homing_requested = True          # set a flag instead of calling directly a function
 
 
 
 def _centering(pin, stepper_frequencies):
+    """
+    Internal helper to call the centering method at the stepper.py Class.
+    This function updates Global variables.
+    """
     global last_idx, centering
     
     centering = True
@@ -77,8 +85,11 @@ def _centering(pin, stepper_frequencies):
     print("#"*12, "  Stepper centering via SENSORLESS homing function  ", "#"*12)
     print("#"*78)
     
-    idx = 0 if last_idx == 1 else 1
-    last_idx = idx
+    idx = 0 if last_idx == 1 else 1          # flag 0 and 1 (alternates every time this function is called)
+    last_idx = idx                           # flag tracking the last idx value
+    
+    # call to the stepper centering method. Note: The stepper frequency alternates each time between
+    # the two vaues set in stepper_frequencies, therefore testing the extreme speed cases
     ret = stepper.centering(stepper_frequencies[idx])
     
     if ret:
@@ -101,13 +112,21 @@ def stop_code():
     print("\nClosing the program ...")       # feedback is printed to the terminal
     
 
-# some variables
-stepper_frequencies = (400, 1200)            # stepper speeds in Hz (as example)
-last_idx = 1                                 # used to alternate between the 2 stepper frequencies
 
-debounce_time = 10                           # minimum time (ms) for push button debounce
+################################################################################################
+################################################################################################
+################################################################################################
+
+# variables setting
+
+last_idx = 1                                 # flag used to alternate between the 2 stepper frequencies
+stepper_frequencies = (400, 1200)            # stepper speeds (Hz) alternatively used for the centering demo
+# The stepper_frequencies values could be changed based on your need
+# Note: values outside the range 400 ~ 1200Hz will be clamped to these values by stepper.py
+
+debounce_time_ms = 10                        # minimum time (ms) for push button debounce
 homing_requested = False                     # flag used by the IRQ and main function to start the centering
-centering = False                            # flag tracking if centering process in action
+centering = False                            # flag tracking if centering process (not in action / in action)
 
 debug = True                                 # if True some informative prints will be made on the Shell
 
@@ -120,7 +139,7 @@ try:
     Stepper = import_stepper()               # stepper module
     board_info = os.uname()                  # determining wich board_type is used
 
-    # assigning max PIO frequency
+    # assigning max PIO frequency, depending on the board type
     if '2040' in board_info.machine:
         if 'W' in board_info.machine:
             board_type = 'RP2040 W'
@@ -140,14 +159,15 @@ try:
 
 
     
-    # GPIO pin to enable the motor, if the TMC2209 EN pin is wired to GND
+    # GPIO pin to enable the motor
+    # Note: Alternatively, the TMC2209 EN pin must be wired to GND
     enable_pin = Pin(2, Pin.IN, Pin.PULL_UP)
-    enable_pin.value(0)  # pin is set low (TMC2209 current to stepper)
+    enable_pin.value(0)  # pin is set low (TMC2209 enabled, stepper always energized)
     
-    # GPIO pin used to start the sensorless homing demo
+    # GPIO pin used to start each run of the sensorless homing demo
     homing_pin = Pin(9, Pin.IN, Pin.PULL_UP)
 
-    # interrupt for the GPIO pin used to start the sensorless homing
+    # interrupt for the push button GPIO pin used to start the sensorless homing
     homing_pin.irq(trigger=Pin.IRQ_FALLING, handler=pin_handler)
 
     # stepper Class instantiatiation
@@ -158,7 +178,8 @@ try:
     print("Sensorless homing example")
     print("\nPress the GPIO homing_pin for SENSORLESS homing demo") 
 
-
+    
+    # iterative part of the mainn function
     while True:                              # infinite loop
         if homing_requested:                 # case the homing_requested flag is True
             homing_requested = False         # reset the homing_requested flag
