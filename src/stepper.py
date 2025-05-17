@@ -234,8 +234,8 @@ class Stepper:
 
     def set_stallguard(self, threshold):
         """Sets the StallGuard threshold at TMC driver, via the UART."""
-         # clamp the SG threshold between 0 and 255
-         threshold = max(0, min(threshold, 255))
+        # clamp the SG threshold between 0 and 255
+        threshold = max(0, min(threshold, 255))
         
         # set the StallGuard threshold and the call-back handler function
         self.tmc.setStallguard_Callback(threshold = threshold, handler = self._stallguard_callback)
@@ -395,7 +395,7 @@ class Stepper:
                 self.sm0.put(stepper_val)               # stepper speed
                 self.start_stepper()                    # stepper is started
                 if self.debug:                          # case self.debug is set True
-                    print(f"Counted {steps_range} in between the 2 homes")
+                    print(f"Counted {steps_range} steps in between the 2 homes")
                     print(f"Positioning the stepper at {half_range} from the last detected home")
                 return True                             # True is returned when centering succeeds
             
