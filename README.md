@@ -77,11 +77,12 @@ In my setup, this approach works well for stepper speed ranging from 400Hz to 12
 
 ## Installation:
 1. Set the TMC2209 Vref according to the driver's datasheet and the stepper characteristics.
-2. Copy all the files from `/stepper_sensorless_homing/tree/main/src` folder to a folder in your Raspberry Pi Pico.
-3. Run the example.py script in MicroPython.
-4. Press the push button, connected to GPIO 9, and the Sensorless homing process will start.
-5. Eventually adjust the k parameter in stepper.py , to increase or reduce StallGuard sensitivity.
-6. In my setup, I could vary the Vref between 1.0V and 1.4V and reliably getting the homing at 400Hz and 1200Hz, without the need to change the code.
+2. Flash your board with Micropython v1.24.1 or later version. If using the RP2040-Zero, refer to V1.24.1 from this link https://micropython.org/download/PIMORONI_TINY2040/
+3. Copy all the files from `/stepper_sensorless_homing/tree/main/src` folder to a folder in your Raspberry Pi Pico.
+4. Run the example.py script in MicroPython.
+5. Press the push button, connected to GPIO 9, and the Sensorless homing process will start.
+6. Eventually adjust the k parameter in stepper.py , to increase or reduce StallGuard sensitivity.
+7. In my setup, I could vary the Vref between 1.0V and 1.4V and reliably getting the homing at 400Hz and 1200Hz, without the need to change the code.
 
 <br><br>
 
