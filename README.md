@@ -50,6 +50,7 @@ In my setup, this approach works well for stepper speed ranging from 400Hz to 12
 
 ## Connections:
 
+Wiring diagram kindly shared by DIY Machines <br>
 ![connections_image](/images/connections_image.jpg)
 
 | Ref |  Module |   Pin   | Connection |   Pin   |       Ref      |    Module   | Notes                                      |
