@@ -50,6 +50,8 @@ In my setup, this approach works well for stepper speed ranging from 400Hz to 12
 
 ## Connections:
 
+![connections_image](/images/connections_image.jpg)
+
 | Ref |  Module |   Pin   | Connection |   Pin   |       Ref      |    Module   | Notes                                      |
 |:---:|:-------:|:-------:|:----------:|:-------:|:--------------:|:-----------:|--------------------------------------------|
 |  5V |  RP2040 |    5V   |    <-->    |         |       5V       |     PSU     | power supply unit for logic                |
