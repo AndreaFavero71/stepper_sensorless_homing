@@ -32,7 +32,8 @@ https://youtu.be/Dh-xW871_UM
 Lewis (DIY Machines) and I collaborated on this topic to make it easier to reproduce this functionality.<br>
 Our shared goal is to help others get started and make this technique more well-known and usable in other projects.<br>
 
-This demo uses Lewis’s V2 board (modified as V3) and 3D-printed fixture, along with the latest code release:
+This demo uses Lewis’s V2 board (modified as V3) and 3D-printed fixture, along with the latest code release:<br><br>
+https://youtu.be/fMuNHKNTSt8
 [![Watch the Demo](https://i.ytimg.com/vi/fMuNHKNTSt8/maxresdefault.jpg)](https://youtu.be/fMuNHKNTSt8)
 
 <br>
@@ -70,9 +71,9 @@ Note: StallGuard is ignored for the first 100ms of every motor's startup; This s
 
 
 ## Connections:
-Wiring diagram kindly shared by Lewis (DIY Machines), for the V3 board. This latest board version will be available on early July 2025.<br>
+Wiring diagram kindly shared by Lewis (DIY Machines), for the **V3 board** (this latest board version will be available on early July 2025).<br>
 One of the key differences from the V2 board is the GPIO 11 connection to the TMC2209 DIAG pin.<br>
-Compare with `/images/connections_v2.jpg` if you plan to upgrade from the V2 board.<br>
+Compare with [board_V2 wiring diagram](../images/connections_V2.jpg) if you plan to upgrade your V2 board <br>
 ![connections_image](/images/connections_V3.jpg)	
 <br><br>
 
