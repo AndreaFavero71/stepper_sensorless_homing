@@ -1,5 +1,5 @@
 # Stepper motor SENSORLESS homing & centering.
-This sensorless feature is based on the Trinamic TMC2209's StallGuard function.<br>
+This sensorless feature is based on the StallGuard function of Trinamic TMC2209's stepper driver.<br>
 
 The TMC2209 integrates a UART interface, to which the RP2040 is connected.<br>
 Via the UART, the StallGuard settings are applied, and its real time value can be accessed.<br>
@@ -54,16 +54,16 @@ https://youtu.be/fMuNHKNTSt8
 
 
 ### StallGuard Depends on Speed as Well as Torque:
-The StallGuard value varies with speed: The chart below shows StallGuard values experimentally collected in my setup with the motor running unloaded.<br>
+The StallGuard value varies with speed: The chart below shows StallGuard values experimentally collected in my setup, with the motor running unloaded.<br>
 When the stepper speed varies within a limited frequency range, the SG variation is relatively (and usefully) linear.<br>
 In the code, the expected minimum SG is calculated using: `min_expected_SG = 0.15 * speed      # speed is stepper frequency in Hz`<br>
 
 Sensorless homing stops the stepper when the first of these two conditions is true:
-- SG value, retrieved from UART, falling below 80% of the expected minimum.<br>
-- DIAG pin raising, when SG falling below the 45% of the expected minimum (latest code release).<br>
+- SG value, retrieved from UART, falling below 80% of the expected minimum (parameter `k` in `stepper.py` file).<br>
+- DIAG pin raising, when SG falling below the 45% of the expected minimum (parameter `k2` in latest `stepper.py` file).<br>
 
 This method works well from 400Hz to 1200Hz (up to 2000Hz with latest code).<br>
-Note: StallGuard is ignored for the first 100ms of every motor's startup; This saves quite a bit of trouble :smile: <br>
+**Note:** StallGuard is ignored for the first 100ms of every motor's startup; This saves quite a bit of trouble :smile: <br>
  
 ![chart image](/images/sg_chart2.PNG)
  
@@ -73,7 +73,7 @@ Note: StallGuard is ignored for the first 100ms of every motor's startup; This s
 ## Connections:
 Wiring diagram kindly shared by Lewis (DIY Machines), for the **V3 board** (this latest board version will be available on early July 2025).<br>
 One of the key differences from the V2 board is the GPIO 11 connection to the TMC2209 DIAG pin.<br>
-Compare with [board_V2 wiring diagram](../images/connections_V2.jpg) if you plan to upgrade your V2 board <br>
+Compare with [board_V2 wiring diagram](./images/connections_V2.jpg) if you plan to upgrade your V2 board.<br>
 ![connections_image](/images/connections_V3.jpg)	
 <br><br>
 
@@ -83,42 +83,50 @@ The easiest setup is to:
 - Watch Lewis's tutorial https://youtu.be/TEkM0uLlkHU
 - Use a board from DIY Machines and 3D-print the fixture designed by Lewis.<br>
 
-Necessary steps are
+Necessary steps are:
 1. Set the TMC2209 Vref according to the driver's datasheet and your stepper motor.
 2. Flash your board with Micropython v1.24.1 or later version. If using the RP2040-Zero, refer to V1.24.1 from this link https://micropython.org/download/PIMORONI_TINY2040/
-3. Copy all the files from `/stepper_sensorless_homing/tree/main/src/board_v3` to a folder in your RP2040-Zero.
-4. The code (example.py) gets automatically started by main.py. To prevent auto-start, keep GPIO 0 shorted to GND while powering the board.
+3. Copy all the files from [board_V3 folder](https://github.com/AndreaFavero71/stepper_sensorless_homing/tree/main/src/board_V3) into the root folder in your RP2040-Zero; In case you have a V2 board, you can either upgrade it to V3 (connect GPIO 11 to DIAG), or download the files from [board_V2 folder](https://github.com/AndreaFavero71/stepper_sensorless_homing/tree/main/src/board_V2).
+4. The example code `example.py` gets automatically started by `main.py`. To prevent the auto-start, keep GPIO 0 shorted to GND while powering the board.
 5. Press the button connected to GPIO 9 to start the homing process.
-6. Adjust the k parameter in stepper.py to increase/decrease StallGuard sensitivity (UART), as well as K2 parameters (DIAG pin).
+Every time the button is pressed, the stepper motor speed is alternated between the two frequencies values set at `stepper_frequencies = (400, 1200)` in `example.py` file; If you prefer testing with a single speed, write the same value on both the tuple values.
+6. Adjust the k parameter in stepper.py to increase/decrease StallGuard sensitivity (UART), as well as K2 parameters (acting on DIAG pin).
 7. In my setup, I could vary the Vref between 1.0V and 1.4V and reliably getting the homing at 400Hz and 1200Hz, without changing the code.
+<br><br>
+
 
 With the latest code release:
-- Sensorless homing works fairly well up to 2000 Hz and with microstepping from 1/8 to 1/64.<br>
+- Sensorless homing uses both the SG values readings from the UART, as well as the DIAG pin signal level from the TMC2209 driver.<br>
+- The sensorless homing detection is extended up to 2000Hz.
+- The sensorless functionality is extended to all the microstepping settings (from 1/8 to 1/64).<br>
   You can configure microstepping in `stepper.py` using `(ms = self.micro_step(0)   # ms --> 0=1/8, 1=1/16, 2=1/32, 3=1/64)`.
-- The stepper moves shortly backward at the beginning, to ensure enough 'room' while searching for the first hard-stop.
+- The stepper motor moves shortly backward at the beginning, to ensure enough 'room' while searching for the first hard-stop.
 
 <br><br><br>
 
 
 ## Notes:
-The onboard RGB LED blinks when the StallGuard value falls below the homing threshold.<br>
-The code uses the onboard RGB LED of RP2040-Zero or RP2350-Zero, yet not available in Pico, nor Pico W nor Pico 2 versions.<br>
+The built-in RGB LED flashes in different colors to indicate various activities/results.<br>
+This code uses the onboard RGB LED of the RP2040-Zero or RP2350-Zero, which is not available on the Pico, Pico W, or Pico 2.<br>
 
-Please Take note of the license related to the TMC2209 files, as having some restrictions.
-Feel free to use and change the code to your need, by respecting the License requirements; Please feedback in case of improvements proposals.
+Please note that the TMC2209 files are subject to license restrictions.<br>
+You’re free to use and modify the code, provided you follow the license terms. I welcome any feedback or suggestions for improvement.
 
-Of course, using this code is at your own risk :-)
+
+**Note:** Use this code at your own risk :smile:
 
 <br><br>
 
 
 ## Acknowledgements:
-Many thanks to Daniel Frenkel and his ebook on Trinamic drivers, book available in Kindle format at [Amazon](https://www.amazon.com/stores/Daniel-Frenkel/author/B0BNZG6FPD?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true).<br>
+Many thanks to:
+- Lewis (DIY Machines), for the nice collaboration and his detailed [video tutorial](https://youtu.be/TEkM0uLlkHU) on this topic.
+- Daniel Frenkel and his ebook on Trinamic drivers, book available in Kindle format at [Amazon](https://www.amazon.com/stores/Daniel-Frenkel/author/B0BNZG6FPD?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true).
+- Chr157i4n for making the extensive TMC_2209 library.
+- anonymousaga for his adaptation of the driver for Raspberry Pi Pico.
 
-Many thanks to Chr157i4n for making the extensive TMC_2209 library.<br>
-Many thanks to anonymousaga for his adaptation of the driver for Raspberry Pi Pico.<br>
-Original files I've modified for this demo: TMC_2209_StepperDriver.py and TMC_2209_uart.py<br><br><br>
 
+Original files I've modified for this demo: TMC_2209_StepperDriver.py and TMC_2209_uart.py<br>
 Original source: https://github.com/troxel/TMC_UART<br>
 Original source: https://github.com/Chr157i4n/TMC2209_Raspberry_Pi<br>
 Original source: https://github.com/kjk25/TMC2209_ESP32<br>
