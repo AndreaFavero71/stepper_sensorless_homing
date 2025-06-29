@@ -45,8 +45,9 @@ https://youtu.be/fMuNHKNTSt8
  - The stepper is 200 pulses/rev, set to 1/8 microstepping = 1600 pulses/rev.
  - The stepper is controlled by the RP2040-Zero board, running MicroPython.
  - The range in between the hard-stops (homes) is varied along the video.
- - Each time the push button is pressed, a new homing & centering cycle starts.
- - Stepper speed alternates between 400 Hz and 1200 Hz.
+ - Each time the push button is pressed:
+     - a new homing & centering cycle starts.
+     - the stepper speed changes, for demo purpose, by alternating 400 Hz and 1200 Hz.
  - UART communication between RP2040 and TMC2209.
  - The RGB LED flashes red when SG (StallGuard) is triggered, and green when the stepper is centered (it flashes three times when stalling is detected via UART, once if via the DIAG pin).
 
