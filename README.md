@@ -5,6 +5,7 @@ The TMC2209 integrates a UART interface, to which the RP2040 is connected.<br>
 Via the UART, the StallGuard settings are applied, and its real time value can be accessed.<br>
 When the torque on the motor increases, the StallGuard value decreases. This value can then be compared to an expected threshold.<br>
 Additionally, the TMC2209's StallGuard controls the DIAG pin: the RP2040 uses an input interrupt to detect the rising edge of the DIAG level.<br>
+The sensorless homing accuracy has been tested, and it's just great; details are provided below.<br>
 
 This MicroPython code is designed for RP2040 or RP2350 microcontrollers, as it leverages the PIO features. Boards using these chips include the Raspberry Pi Pico, Pico 2, RP2040-Zero, RP2350-Zero, and many others. <br>
 
@@ -54,6 +55,18 @@ https://youtu.be/fMuNHKNTSt8
 <br><br><br>
 
 
+## Repeatability test:
+Despite being a promising technology, already adopted in commercial 3D printers, there is little published data on its precision and repeatability.<br>
+A 0.01mm dial gauge measures the stepper arm’s position, which is controlled by a predefined step count after **sensorless homing**.<br>
+Imprecise homing would immediately reflect on the dial gauge, as seen at 0:28 in the video ([link](https://youtu.be/ilci2rO6KwE?t=28)), where a spacer was added to alter the homing position.<br>
+The key metric is repeatability (effectively precision for most stepper motor applications).<br>
+Test result: 3σ repeatability of ±0.01 mm, better than a single microstep, despite the slight mechanical flex of the 3D-printed setup.
+
+https://youtu.be/ilci2rO6KwE
+[![Watch the Demo](https://i.ytimg.com/vi/ilci2rO6KwE/maxresdefault.jpg)](https://youtu.be/ilci2rO6KwE)
+
+<br>
+
 ### StallGuard Depends on Speed as Well as Torque:
 The StallGuard value varies with speed: The chart below shows StallGuard values experimentally collected in my setup, with the motor running unloaded.<br>
 When the stepper speed varies within a limited frequency range, the SG variation is relatively (and usefully) linear.<br>
@@ -72,7 +85,7 @@ This method works well from 400Hz to 1200Hz (up to 2000Hz with latest code).<br>
 
 
 ## Connections:
-Wiring diagram kindly shared by Lewis (DIY Machines), for the **V3 board** (this latest board version will be available on early July 2025).<br>
+Wiring diagram kindly shared by Lewis (DIY Machines), for the **V3 board**.<br>
 One of the key differences from the V2 board is the GPIO 11 connection to the TMC2209 DIAG pin.<br>
 Compare with [board_V2 wiring diagram](./images/connections_V2.jpg) if you plan to upgrade your V2 board.<br>
 ![connections_image](/images/connections_V3.jpg)	
