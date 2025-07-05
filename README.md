@@ -57,10 +57,10 @@ https://youtu.be/fMuNHKNTSt8
 
 ## Repeatability test:
 Despite being a promising technology, already adopted in commercial 3D printers, there is little published data on its precision and repeatability.<br>
-A 0.01mm dial gauge measures the stepper arm’s position, which is controlled by a predefined step count after **sensorless homing**.<br>
+In the below setup, a 0.01mm dial gauge measures the stepper arm’s stopping position, which is controlled by a predefined step count after **sensorless homing**.<br>
 Imprecise homing would immediately reflect on the dial gauge, as seen at 0:28 in the video ([link](https://youtu.be/ilci2rO6KwE?t=28)), where a spacer was added to alter the homing position.<br>
 The key metric is repeatability (effectively precision for most stepper motor applications).<br>
-Test result: 3σ repeatability of ±0.01 mm, better than a single microstep, despite the slight mechanical flex of the 3D-printed setup.
+Test result: **3σ repeatability of ±0.01 mm**, better than a single microstep, despite the slight mechanical flex of the 3D-printed setup.
 
 https://youtu.be/ilci2rO6KwE
 [![Watch the Demo](https://i.ytimg.com/vi/ilci2rO6KwE/maxresdefault.jpg)](https://youtu.be/ilci2rO6KwE)
